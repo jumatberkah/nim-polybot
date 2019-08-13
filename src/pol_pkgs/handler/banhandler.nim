@@ -32,4 +32,6 @@ proc userChecker*(b: Telebot, u: Update) {.async} =
             except IOError:
                 discard await b.kickChatMember($chat.id, user.id, untildate = 0)
                 discard await b.send(success)
+            except:
+                discard
         

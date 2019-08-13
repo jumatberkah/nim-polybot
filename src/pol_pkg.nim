@@ -23,7 +23,10 @@ proc main() =
     bot.onCommand("time", timeSet)
 
     # Start polling
-    bot.poll(timeout=30)
-
+    try:
+        bot.poll(timeout=300)
+    except:
+        discard
+        
 when isMainModule:
     main()

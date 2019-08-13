@@ -46,7 +46,7 @@ proc updateHandler*(b: Telebot, u: Update) {.async.} =
             else:
                 upsertTime($chat.id, "5m")
                 time = getTimeVal("5m")    
-            if not user.username.isSome:
+            if not user.username.isSome and not (user.id == 777000):
                 var 
                     text = "⚠ " & user.firstName & " mohon pasang <b>username</b>!\n\nℹ Anda <b>dibisukan</b> untuk 5 Menit karena belum memasang <b>username. Tekan tombol dibawah jika sudah.</b> [<code>" & $user.id & "</code>]"
                     msg = newMessage(u.message.get.chat.id, text)
@@ -64,6 +64,8 @@ proc updateHandler*(b: Telebot, u: Update) {.async.} =
                 except IOError:
                     discard await b.restrictChatMember($chat.id, user.id, notperm, untilDate = time)
                     discard await b.send(msg)
+                except:
+                    discard
         elif getSet($chat.id) == "false":
             discard
         else:
@@ -94,7 +96,8 @@ proc queryHandler*(b: Telebot, u: Update) {.async.} =
                     except IOError:
                         discard await b.restrictChatMember($chat.id, user.id, perm, untilDate = 0)
                         discard await b.answerCallbackQuery(query.id, "Terimakasih Sudah Pasang Username")
-            
+                    except:
+                        discard
                 else:
                     discard await b.answerCallbackQuery(query.id, "Anda Belum Pasang Username", 
                     showAlert = true, cacheTime = 5)

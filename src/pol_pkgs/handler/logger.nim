@@ -17,4 +17,4 @@ proc logAll*(b: Telebot, u: Update) {.async} =
         chat = message.chat
     
     insertUserLog(user.id, $user.username, user.firstName, $user.lastName)
-    insertChatLog($chat.id, $chat.title)    
+    insertChatLog($chat.id, $chat.title.get)    
