@@ -23,12 +23,13 @@ proc userChecker*(b: Telebot, u: Update) {.async} =
         success = newMessage(chat.id, text)
     let trs = isSpammer(user.id)
     success.parseMode = "html"
-    if trs == $user.id:
-        try:
-            discard await b.kickChatMember($chat.id, user.id, untildate = 0)
-            discard await b.deleteMessage($chat.id, message.messageId)
-            discard await b.send(success)
-        except IOError:
-            discard await b.kickChatMember($chat.id, user.id, untildate = 0)
-            discard await b.send(success)
-    
+    if chat.kind == "supergroup":
+        if trs == $user.id:
+            try:
+                discard await b.kickChatMember($chat.id, user.id, untildate = 0)
+                discard await b.deleteMessage($chat.id, message.messageId)
+                discard await b.send(success)
+            except IOError:
+                discard await b.kickChatMember($chat.id, user.id, untildate = 0)
+                discard await b.send(success)
+        

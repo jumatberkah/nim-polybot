@@ -39,35 +39,35 @@ proc updateHandler*(b: Telebot, u: Update) {.async.} =
         timestr : string
     timestr = getTime($chat.id)
 
-    
-    if getSet($chat.id) == "true":
-        if not (timestr == ""):
-            time = getTimeVal(getTime($chat.id))
+    if chat.kind == "supergroup":
+        if getSet($chat.id) == "true":
+            if not (timestr == ""):
+                time = getTimeVal(getTime($chat.id))
+            else:
+                upsertTime($chat.id, "5m")
+                time = getTimeVal("5m")    
+            if not user.username.isSome:
+                var 
+                    text = "⚠ " & user.firstName & " mohon pasang <b>username</b>!\n\nℹ Anda <b>dibisukan</b> untuk 5 Menit karena belum memasang <b>username. Tekan tombol dibawah jika sudah.</b> [<code>" & $user.id & "</code>]"
+                    msg = newMessage(u.message.get.chat.id, text)
+                    unmute = initInlineKeyboardButton("✅ Sdh Pasang Username")
+                    howto = initInlineKeyboardButton("⚙️ Cara Pasang Username")
+                howto.url = some("https://www.wikihow.com/Change-Your-Name-on-Telegram-on-Android")
+                unmute.callbackData = some("unmute_" & $user.id)
+                msg.parse_mode = "html"
+                msg.replyMarkup = newInlineKeyboardMarkup(@[howto, unmute])    
+                
+                try:
+                    discard await b.restrictChatMember($chat.id, user.id, notperm, untilDate = time)
+                    discard await b.deleteMessage($chat.id, message.messageId)
+                    discard await b.send(msg)
+                except IOError:
+                    discard await b.restrictChatMember($chat.id, user.id, notperm, untilDate = time)
+                    discard await b.send(msg)
+        elif getSet($chat.id) == "false":
+            discard
         else:
-            upsertTime($chat.id, "5m")
-            time = getTimeVal("5m")    
-        if not user.username.isSome:
-            var 
-                text = "⚠ " & user.firstName & " mohon pasang <b>username</b>!\n\nℹ Anda <b>dibisukan</b> untuk 5 Menit karena belum memasang <b>username. Tekan tombol dibawah jika sudah.</b> [<code>" & $user.id & "</code>]"
-                msg = newMessage(u.message.get.chat.id, text)
-                unmute = initInlineKeyboardButton("✅ Sdh Pasang Username")
-                howto = initInlineKeyboardButton("⚙️ Cara Pasang Username")
-            howto.url = some("https://www.wikihow.com/Change-Your-Name-on-Telegram-on-Android")
-            unmute.callbackData = some("unmute_" & $user.id)
-            msg.parse_mode = "html"
-            msg.replyMarkup = newInlineKeyboardMarkup(@[howto, unmute])    
-            
-            try:
-                discard await b.restrictChatMember($chat.id, user.id, notperm, untilDate = time)
-                discard await b.deleteMessage($chat.id, message.messageId)
-                discard await b.send(msg)
-            except IOError:
-                discard await b.restrictChatMember($chat.id, user.id, notperm, untilDate = time)
-                discard await b.send(msg)
-    elif getSet($chat.id) == "false":
-        discard
-    else:
-        upsertSet($chat.id, "true")       
+            upsertSet($chat.id, "true")       
 
 
 proc queryHandler*(b: Telebot, u: Update) {.async.} =
@@ -82,24 +82,25 @@ proc queryHandler*(b: Telebot, u: Update) {.async.} =
         message = query.message.get
         chat = message.chat
         data = query.data.get
-
-    if match(data, re"unmute_\d+"):
-        var anu = data.split(re"unmute_")
-        if $user.id == $anu[1]:
-            if user.username.isSome:
-                try:
-                    discard await b.restrictChatMember($chat.id, user.id, perm, untilDate = 0)
-                    discard await b.answerCallbackQuery(query.id, "Terimakasih Sudah Pasang Username")
-                    discard await b.deleteMessage($chat.id, message.messageId)
-                except IOError:
-                    discard await b.restrictChatMember($chat.id, user.id, perm, untilDate = 0)
-                    discard await b.answerCallbackQuery(query.id, "Terimakasih Sudah Pasang Username")
-        
+    if chat.kind == "supergroup":
+        if match(data, re"unmute_\d+"):
+            var anu = data.split(re"unmute_")
+            if $user.id == $anu[1]:
+                if user.username.isSome:
+                    try:
+                        discard await b.restrictChatMember($chat.id, user.id, perm, untilDate = 0)
+                        discard await b.answerCallbackQuery(query.id, "Terimakasih Sudah Pasang Username")
+                        discard await b.deleteMessage($chat.id, message.messageId)
+                    except IOError:
+                        discard await b.restrictChatMember($chat.id, user.id, perm, untilDate = 0)
+                        discard await b.answerCallbackQuery(query.id, "Terimakasih Sudah Pasang Username")
+            
+                else:
+                    discard await b.answerCallbackQuery(query.id, "Anda Belum Pasang Username", 
+                    showAlert = true, cacheTime = 5)
             else:
-                discard await b.answerCallbackQuery(query.id, "Anda Belum Pasang Username", 
-                showAlert = true, cacheTime = 5)
-        else:
-            discard await b.answerCallbackQuery(query.id, "Anda Bukanlah Pengguna Yang Dimaksud",
-            showAlert = true, cacheTime = 10)
-
-
+                discard await b.answerCallbackQuery(query.id, "Anda Bukanlah Pengguna Yang Dimaksud",
+                showAlert = true, cacheTime = 10)
+    
+    
+    
