@@ -14,5 +14,4 @@ proc upsertTime*(chat_id: string, time: string) =
 
 proc getTime*(chat_id: string): string =
     # Get Value of Selected Chat Id
-    var getSetting = conn.getValue(sql("SELECT time FROM timeset WHERE chat_id =?"), chat_id)
-    return getSetting
+    conn.getValue(sql("SELECT time FROM timeset WHERE chat_id =?"), chat_id)

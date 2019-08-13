@@ -6,7 +6,7 @@ import sam
 import net
 import strutils
 import ../sql/ban_sql
-import ../helper_func/auth
+import ../helper_func/[auth, log]
 
 
 proc userChecker*(b: Telebot, u: Update) {.async} = 
@@ -14,12 +14,14 @@ proc userChecker*(b: Telebot, u: Update) {.async} =
         return
     if not (await canBotRestrict(b, $u.message.get.chat.id, u.message.get.chat)):
         return
+    if (await isUserAdmin(b, u.message.get.chat.id.int, u.message.get.fromUser.get.id)):
+        return
 
     var
         message = u.message.get
         user = message.fromUser.get
         chat = message.chat
-        text = "<b>Spammer Terdeteksi!\nID:</b> [<code>" & $user.id & "</code>]"
+        text = "Pengguna [<code>" & $user.id & "</code>] telah di blokir di bot ini."
         success = newMessage(chat.id, text)
     let trs = isSpammer(user.id)
     success.parseMode = "html"
@@ -34,4 +36,4 @@ proc userChecker*(b: Telebot, u: Update) {.async} =
                 discard await b.send(success)
             except:
                 discard
-        
+            discard sendLogSpammer(b, u)

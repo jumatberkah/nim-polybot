@@ -60,8 +60,12 @@ proc startpm*(b: Telebot, u: Command) {.async} =
     var 
         response = u.message
         chat = response.chat
-        text = "Halo disana! Aku adalah bot untuk membantu kamu membisukan pengguna yang belum memasang username, aku juga bisa mengeban para spammer. Tekan /help untuk mengetahui aku lebih lanjut.\n\nTambahkan aku ke obrolan mu! <a href=\"https://t.me/Polyesterbot?startgroup=new\">Tekan ini</a> "
+        text = "Halo disana! Aku adalah bot untuk membisukan pengguna yang belum memasang username, aku juga bisa mengeban para spammer. Tekan /help untuk mengetahui aku lebih lanjut.\n\nTambahkan aku ke obrolan mu! <a href=\"https://t.me/Polyesterbot?startgroup=new\">Tekan ini</a>."
         msg = newMessage(response.chat.id, text)
     msg.parseMode = "html"
+    msg.disableWebPagePreview = true
+
     if (chat.kind == "private"):
         discard await b.send(msg)
+    else:
+        discard await b.deleteMessage($chat.id, response.messageId)

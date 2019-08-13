@@ -5,7 +5,7 @@ import options
 import sam
 import net
 import re
-import ../helper_func/[auth,utils]
+import ../helper_func/[auth,utils,log]
 import ../sql/[enforce_sql,time_sql]
 from strutils import strip
 
@@ -29,6 +29,8 @@ proc updateHandler*(b: Telebot, u: Update) {.async.} =
     if not u.message.isSome:
         return
     if not (await canBotRestrict(b, $u.message.get.chat.id, u.message.get.chat)):
+        return
+    if (await isUserAdmin(b, u.message.get.chat.id.int, u.message.get.fromUser.get.id)):
         return
 
     var 
@@ -66,6 +68,8 @@ proc updateHandler*(b: Telebot, u: Update) {.async.} =
                     discard await b.send(msg)
                 except:
                     discard
+                discard sendLogUsername(b, u)
+                
         elif getSet($chat.id) == "false":
             discard
         else:
@@ -84,6 +88,7 @@ proc queryHandler*(b: Telebot, u: Update) {.async.} =
         message = query.message.get
         chat = message.chat
         data = query.data.get
+
     if chat.kind == "supergroup":
         if match(data, re"unmute_\d+"):
             var anu = data.split(re"unmute_")
@@ -104,6 +109,4 @@ proc queryHandler*(b: Telebot, u: Update) {.async.} =
             else:
                 discard await b.answerCallbackQuery(query.id, "Anda Bukanlah Pengguna Yang Dimaksud",
                 showAlert = true, cacheTime = 10)
-    
-    
     

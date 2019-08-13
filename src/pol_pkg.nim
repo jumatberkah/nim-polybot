@@ -2,7 +2,6 @@ import pol_pkgs/commands/[banmanager, usermanager]
 import pol_pkgs/handler/[banhandler, logger, usernamehandler]
 import pol_pkgs/config
 import telebot, asyncdispatch, logging, options
-from strutils import strip
 
 
 proc main() = 
@@ -23,10 +22,7 @@ proc main() =
     bot.onCommand("time", timeSet)
 
     # Start polling
-    try:
-        bot.poll(timeout=300)
-    except:
-        discard
-        
+    bot.poll(timeout=300)
+
 when isMainModule:
     main()

@@ -14,5 +14,4 @@ proc upsertSet*(chat_id: string, opt: string) =
 
 proc getSet*(chat_id: string): string =
     # Get Value of Selected Chat Id
-    var getSetting = conn.getValue(sql("SELECT option FROM setting WHERE chat_id =?"), chat_id)
-    return getSetting
+    conn.getValue(sql("SELECT option FROM setting WHERE chat_id =?"), chat_id)

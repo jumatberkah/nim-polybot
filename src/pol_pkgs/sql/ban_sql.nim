@@ -1,4 +1,5 @@
 import db_postgres
+import re
 import ../config
 
 
@@ -30,5 +31,4 @@ proc deleteFbanChat*(chat_id: string) =
 
 proc isSpammer*(user_id: int) : string =
     # Get Data
-    var isSpam = conn.getValue(sql("SELECT user_id FROM spamuser WHERE user_id =?"), user_id)
-    return isSpam
+    conn.getValue(sql("SELECT user_id FROM spamuser WHERE user_id =?"), user_id)
