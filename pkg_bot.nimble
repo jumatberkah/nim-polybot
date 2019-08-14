@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.2.3"
+version       = "0.2.5"
 author        = "nayefhaidir"
 description   = "Polyester Bot"
 license       = "GNU GPL 3.0"

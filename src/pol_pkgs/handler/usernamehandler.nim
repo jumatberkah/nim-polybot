@@ -30,7 +30,7 @@ proc updateHandler*(b: Telebot, u: Update) {.async.} =
         return
     if not (await canBotRestrict(b, $u.message.get.chat.id, u.message.get.chat)):
         return
-    if (await isUserAdmin(b, u.message.get.chat.id.int, u.message.get.fromUser.get.id)):
+    if (await isUserAdmin(b, u.message.get.chat.id.int, u.message.get.fromUser.get.id)) == true:
         return
 
     var 
@@ -80,6 +80,8 @@ proc queryHandler*(b: Telebot, u: Update) {.async.} =
     if not u.callbackQuery.isSome:
         return
     if not (await canBotRestrict(b, $u.callbackQuery.get.message.get.chat.id, u.callbackQuery.get.message.get.chat)):
+        return
+    if (await isUserAdmin(b, u.callbackQuery.get.message.get.chat.id.int, u.callbackQuery.get.fromUser.id)):
         return
 
     var 
