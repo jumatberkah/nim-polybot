@@ -37,3 +37,21 @@ proc sendLogSpammer*(b: Telebot, u: Update) {.async} =
     success.parseMode = "html"
     success.disableWebPagePreview = true
     discard await b.send(success)
+
+
+proc sendLogSpammerChn*(b: Telebot, id: string, rson: string) {.async} =
+    var
+        text = "#FBAN\n\nUser ID : <code>" & id & "</code>\nReason : <code>" & rson & "</code>\nTime : " & format(local(getTime()), "d MMMM yyyy HH:mm")
+        success = newMessage(-1001381264934, text)
+    success.parseMode = "html"
+    success.disableWebPagePreview = true
+    discard await b.send(success)
+
+
+proc sendLogunSpammerChn*(b: Telebot, id: string) {.async} =
+    var
+        text = "#UNFBAN\n\nUser ID : <code>" & id & "</code>\nTime : " & format(local(getTime()), "d MMMM yyyy HH:mm")
+        success = newMessage(-1001381264934, text)
+    success.parseMode = "html"
+    success.disableWebPagePreview = true
+    discard await b.send(success)

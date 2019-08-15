@@ -21,7 +21,7 @@ proc userChecker*(b: Telebot, u: Update) {.async} =
         message = u.message.get
         user = message.fromUser.get
         chat = message.chat
-        text = "Pengguna [<code>" & $user.id & "</code>] telah di blokir di bot ini."
+        text = "Pengguna <a href=\"tg://user?id=" & $user.id & "\">" & user.firstName & "</a> telah <b>diblokir</b> secara global. [<code>" & $user.id & "</code>]"
         success = newMessage(chat.id, text)
     let trs = isSpammer(user.id)
     success.parseMode = "html"

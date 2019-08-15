@@ -5,7 +5,7 @@ import telebot, asyncdispatch, logging, options
 
 
 proc main() = 
-    # Initiatiation
+    # Initiation
     let bot = newTeleBot(apiKey) 
 
     # Message Update
@@ -22,7 +22,7 @@ proc main() =
     bot.onCommand("time", timeSet)
 
     # Start polling
-    bot.poll(timeout=300)
+    bot.poll(timeout=50, clean=true)
 
 when isMainModule:
     main()

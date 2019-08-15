@@ -50,7 +50,7 @@ proc updateHandler*(b: Telebot, u: Update) {.async.} =
                 time = getTimeVal("5m")    
             if not user.username.isSome and not (user.id == 777000):
                 var 
-                    text = "⚠ " & user.firstName & " mohon pasang <b>username</b>!\n\nℹ Anda <b>dibisukan</b> untuk 5 Menit karena belum memasang <b>username. Tekan tombol dibawah jika sudah.</b> [<code>" & $user.id & "</code>]"
+                    text = "<a href=\"tg://user?id=" & $user.id & "\">" & user.firstName & "</a> telah <b>dibisukan</b> karena belum memasang <b>username</b>. [<code>" & $user.id & "</code>]"
                     msg = newMessage(u.message.get.chat.id, text)
                     unmute = initInlineKeyboardButton("✅ Sdh Pasang Username")
                     howto = initInlineKeyboardButton("⚙️ Cara Pasang Username")

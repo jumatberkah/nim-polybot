@@ -1,9 +1,13 @@
 import dotenv
 import os
-from strutils import parseInt, replace, split
 import telebot
 import db_postgres
+import logging
+from strutils import parseInt, replace, split
 
+# Logging
+var L = newConsoleLogger(fmtStr="$levelname, [$time] ")
+addHandler(L)
 
 # Load .env file
 let env = initDotEnv()
