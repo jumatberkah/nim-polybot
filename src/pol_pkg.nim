@@ -1,12 +1,12 @@
-import pol_pkgs/commands/[banmanager, usermanager]
+import pol_pkgs/commands/[banmanager, usermanager, pmmenu]
 import pol_pkgs/handler/[banhandler, logger, usernamehandler]
 import pol_pkgs/config
 import telebot, asyncdispatch, logging, options
 
 
-proc main() = 
+proc main() {.async.} = 
     # Initiation
-    let bot = newTeleBot(apiKey) 
+    let bot = newTeleBot(apiKey)
 
     # Message Update
     bot.onUpdate(userChecker)
@@ -20,9 +20,10 @@ proc main() =
     bot.onCommand("unfban", unfban)
     bot.onCommand("enforce", enforceSet)
     bot.onCommand("time", timeSet)
+    bot.onCommand("help", pmHandler)
 
     # Start polling
-    bot.poll(timeout=50, clean=true)
+    bot.poll(timeout=15, clean=true)
 
 when isMainModule:
-    main()
+    waitFor main()
