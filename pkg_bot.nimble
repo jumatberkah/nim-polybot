@@ -1,6 +1,5 @@
 # Package
-
-version       = "0.3.0"
+version       = "0.3.3"
 author        = "nayefhaidir"
 description   = "Polyester Bot"
 license       = "GNU GPL 3.0"
@@ -9,7 +8,6 @@ bin           = @["pol_pkg"]
 
 
 # Dependencies
-
 requires "nim >= 0.20.0"
 requires "telebot >= 0.6.8", "regex >= 0.11.2", "dotenv >=1.1.1"
 

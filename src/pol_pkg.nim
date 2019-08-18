@@ -26,4 +26,6 @@ proc main() {.async.} =
     bot.poll(timeout=15, clean=true)
 
 when isMainModule:
+    echo("Bot Initializing...")
     waitFor main()
+    echo("Bot Running In a Loop.")

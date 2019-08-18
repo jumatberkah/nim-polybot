@@ -10,13 +10,14 @@ import ../sql/[enforce_sql,time_sql]
 from strutils import strip
 
 
-# User Chat Permissions
+# Grant User Permissions
 let perm = ChatPermissions(canSendMessages: some(true),
 canSendMediaMessages: some(true),
 canSendPolls: some(true),
 canSendOtherMessages: some(true),
 canAddWebPagePreviews: some(true))
 
+# Restrict User Permissions
 let notperm = ChatPermissions(canSendMessages: some(false),
 canSendMediaMessages: some(false),
 canSendPolls: some(false),
@@ -26,6 +27,7 @@ canAddWebPagePreviews: some(false))
 
 # Function(s)
 proc updateHandler*(b: Telebot, u: Update) {.async.} =
+    # Message listener. (Mute someone when he/she does not have username)
     if not u.message.isSome:
         return
     if not (await canBotRestrict(b, $u.message.get.chat.id, u.message.get.chat)):
@@ -77,6 +79,7 @@ proc updateHandler*(b: Telebot, u: Update) {.async.} =
 
 
 proc queryHandler*(b: Telebot, u: Update) {.async.} =
+    # Query Listener. (Un-restrict users when they have username)
     if not u.callbackQuery.isSome:
         return
     if not (await canBotRestrict(b, $u.callbackQuery.get.message.get.chat.id, u.callbackQuery.get.message.get.chat)):
